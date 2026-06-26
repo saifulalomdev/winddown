@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Tick ⏱️
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A distraction-free countdown timer built with React and Capacitor.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Full-screen countdown** — goes immersive the moment you hit start
+- **Auto landscape lock** — locks to landscape on mobile for a clean display
+- **Quick presets** — jump to 15, 30, or 45 minutes in one tap
+- **Soft audio tick** — a gentle tick every second to keep you present
+- **Hours & minutes picker** — set any custom duration you need
 
-## React Compiler
+## Tech stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React + TypeScript
+- Capacitor (screen orientation + native mobile support)
+- Tailwind CSS
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Install dependencies
+npm install
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Run in browser
+npm run dev
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Build for mobile
+npm run build
+npx cap sync
+npx cap open ios      # or android
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Project structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── App.tsx                  # Main timer component
+├── ui/
+│   └── button.tsx           # Button component
+└── utils/
+    └── format-time.ts       # Time formatting helper
+public/
+└── soft-tick.mp3            # Tick sound effect
+```
+
+## Usage
+
+1. Set hours and minutes using the dropdowns, or tap a quick preset (15 / 30 / 45 min)
+2. Tap **Start countdown** — the screen goes full-screen and locks to landscape
+3. Tap **Stop** at any time to return to the picker
+
+## License
+
+MIT
