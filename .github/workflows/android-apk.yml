@@ -27,8 +27,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build web app
-        env:
-          VITE_BACKEND_URL: https://api.kabyaghor.saifulalom.com 
         run: pnpm build
 
       - name: Generate Android platform
@@ -36,6 +34,9 @@ jobs:
 
       - name: Sync Capacitor
         run: npx cap sync android
+
+      - name: Generate app icons
+        run: npx @capacitor/assets generate --android
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -46,11 +47,11 @@ jobs:
       - name: Build APK
         run: |
           cd android
+          chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          with:
           name: app-debug
           path: android/app/build/outputs/apk/debug/
