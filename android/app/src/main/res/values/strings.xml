@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">winddown</string>
+    <string name="title_activity_main">winddown</string>
+    <string name="package_name">com.winddown.app</string>
+    <string name="custom_url_scheme">com.winddown.app</string>
+</resources>
