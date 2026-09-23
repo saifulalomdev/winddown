@@ -10,6 +10,9 @@ export default function App() {
       const result = await Camera.takePhoto({
         quality: 90,
         includeMetadata: true, 
+        saveToGallery: true,
+        editable: "external",
+        presentationStyle: "popover",
       });
 
       // result.webPath can be set directly as the src of an image element
