@@ -79,15 +79,12 @@ export function AuthBranding() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center gap-3">
-      <div className="w-20 h-20 rounded-2xl bg-black flex items-center justify-center shadow-sm">
+      <div className="w-20 h-20 rounded-full bg-black flex items-center justify-center shadow-sm">
         <span className="text-white text-3xl font-bold">EZ</span>
       </div>
       <h1 className="text-3xl font-bold tracking-tight text-foreground">
         {t('appName')}
       </h1>
-      <p className="text-sm text-muted-foreground text-center px-6">
-        {t('appSubtitle')}
-      </p>
     </div>
   );
 }

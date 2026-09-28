@@ -4,6 +4,7 @@ android {
     namespace = "com.saifulalom.ezorder"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
+        // DO NOT REMOVE: This must match the package name registered in your Google Cloud Console Android OAuth client ID.
         applicationId "com.saifulalom.ezorder"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
