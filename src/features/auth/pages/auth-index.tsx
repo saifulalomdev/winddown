@@ -15,7 +15,7 @@ export function AuthIndex() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-dvh overflow-hidden p-6">
+    <div className="flex flex-col justify-between h-dvh overflow-hidden p-10">
       <AuthBranding />
       <div className="space-y-3 w-full">
         <LanguageSwitcher />

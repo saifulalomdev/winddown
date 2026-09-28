@@ -1,17 +1,24 @@
 import { BrowserRouter, Route, Routes, Outlet } from 'react-router-dom';
 import { AuthLayout } from '@/layouts/auth-layout';
+import { AuthProvider } from './features/auth';
 import { AuthIndex } from './features/auth';
+import { AuthGuard } from './features/auth';
+import BaseLayout from './layouts/base-layout';
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Outlet />}>
-          <Route path="auth" element={<AuthLayout />}>
-            <Route index element={<AuthIndex />} />
-          </Route>
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <AuthGuard>
+          <Routes>
+            <Route path="/" element={<BaseLayout />}>
+              <Route path="auth" element={<AuthLayout />}>
+                <Route index element={<AuthIndex />} />
+              </Route>
+            </Route>
+          </Routes>
+        </AuthGuard>
+      </AuthProvider>
     </BrowserRouter>
   );
 }
