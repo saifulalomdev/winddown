@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { authClient } from "./auth-client";
 
-const CACHED_USER_KEY = "offline_user_session";
+// const CACHED_USER_KEY = "offline_user_session";
 
 export function useAuthState() {
   const [user, setUser] = useState<any | null>(null);
