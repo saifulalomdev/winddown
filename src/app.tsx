@@ -4,7 +4,7 @@ export default function App() {
   return (
     <div>
       <Button>
-        this is 
+        This is
       </Button>
     </div>
   )
