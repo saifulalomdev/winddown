@@ -1,25 +1,70 @@
-// src/features/auth/pages/auth-index.tsx
+import { ErrorCode, GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { GoogleIcon } from "@/icon/google-icon";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { authClient } from '../auth-client';
+
 
 export function AuthIndex() {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation('auth');
 
-  const handleGoogleSignIn = () => {
-    setIsLoading(true);
+  useEffect(() => {
+    const initGoogleAuth = async () => {
+      try {
+        await GoogleSignIn.initialize({
+          clientId: '754679532343-7sk7voif90pa6d0ma9c92i48bs6p07fk.apps.googleusercontent.com',
+          scopes: ['profile', 'email'],
+        });
+      } catch (e) {
+        console.error("Initialization error:", e);
+      }
+    };
+    initGoogleAuth();
+  }, []);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      setIsLoading(true);
+      const result = await GoogleSignIn.signIn({
+        
+      });
+
+      const data = await authClient.signIn.social({
+        provider: "google",
+        idToken: {
+          token: result.idToken
+        }
+      })
+      console.log(data)
+    } catch (error: any) {
+      if (error.code === ErrorCode.SignInCanceled) {
+        console.log('The user canceled the sign-in flow.');
+      } else if (error.code === ErrorCode.NoCredentialAvailable) {
+        console.log('No Google account is available on this device.');
+      } else if (error.code === ErrorCode.ProviderConfigurationError) {
+        console.log('Google Play services is not available or not up to date.');
+      } else {
+        console.log('Another error occurred:', error);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="flex flex-col justify-between h-dvh overflow-hidden p-10">
+    <div className="flex flex-col justify-between h-dvh p-10">
       <AuthBranding />
       <div className="space-y-3 w-full">
         <LanguageSwitcher />
-        <Button className="w-full gap-3" disabled={isLoading} onClick={handleGoogleSignIn}>
+        <Button
+          className="w-full gap-3"
+          disabled={isLoading}
+          onClick={handleGoogleSignIn}
+        >
           <GoogleIcon />
           <span>{t('continueWithGoogle')}</span>
           {isLoading && <Spinner />}

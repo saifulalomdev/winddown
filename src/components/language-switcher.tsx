@@ -17,20 +17,20 @@ export function LanguageSwitcher() {
     <div className="flex flex-row items-center gap-2 h-12 justify-between w-full bg-gray-100 rounded-full">
       <Button
         size="sm"
-        variant={isBangla ? 'default' : 'ghost'}
-        className="flex-1"
-        onClick={() => changeLanguage('bn')}
-      >
-        {t('languageBangla')}
-      </Button>
-
-      <Button
-        size="sm"
-        variant={isEnglish ? 'default' : 'ghost'}
+        variant={isEnglish ? 'outline' : 'ghost'}
         className="flex-1"
         onClick={() => changeLanguage('en')}
       >
         {t('languageEnglish')}
+      </Button>
+
+      <Button
+        size="sm"
+        variant={isBangla ? 'outline' : 'ghost'}
+        className="flex-1"
+        onClick={() => changeLanguage('bn')}
+      >
+        {t('languageBangla')}
       </Button>
     </div>
   );

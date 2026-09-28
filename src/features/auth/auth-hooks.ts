@@ -13,12 +13,12 @@ export function useAuthState() {
     try {
       setIsLoading(true);
 
-     
-
+      const { data, error } = await authClient.getSession()
+      console.log(data, error);
       setIsLoading(false);
 
       try {
-        
+
       } catch {
         setIsOffline(true);
       }

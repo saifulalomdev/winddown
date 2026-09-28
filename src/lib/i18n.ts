@@ -9,8 +9,8 @@ i18n.use(initReactI18next).init({
         en: { auth: authEn },
         bn: { auth: authBn },
     },
-    lng: 'bn',
-    fallbackLng: 'bn',
+    lng: 'en',
+    fallbackLng: 'en',
     interpolation: {
         escapeValue: false,
     },

@@ -6,6 +6,7 @@ import { AuthIndex } from './features/auth';
 import { AuthGuard } from './features/auth';
 
 export default function App() {
+
   return (
     <BrowserRouter>
       <AuthProvider>
