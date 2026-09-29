@@ -7,10 +7,12 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { authClient } from '../auth-client';
+import { useAuth } from '../components/auth-context';
 
 export function AuthIndex() {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation('auth');
+  const { setAuthData } = useAuth()
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,7 +37,15 @@ export function AuthIndex() {
         provider: "google",
         idToken: { token: result.idToken }
       });
-      navigate("/")
+      const { data } = await authClient.getSession();
+      if (data) {
+        // 1. Instantly update React context state (NO spinner flash!)
+        setAuthData(data);
+
+        // 2. Smooth navigation
+        navigate("/", { replace: true });
+      }
+      navigate("/");
     } catch (error: any) {
       if (error.code === ErrorCode.SignInCanceled) {
         console.log('The user canceled the sign-in flow.');
@@ -52,7 +62,7 @@ export function AuthIndex() {
   };
 
   return (
-    <main className="flex flex-col justify-between h-dvh p-10">
+    <main className="flex flex-col justify-between h-dvh py-20 px-8">
       <AuthBranding />
       <div className="space-y-3 w-full">
         <LanguageSwitcher />

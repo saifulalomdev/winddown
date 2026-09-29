@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import type { Session, User } from "./auth-types";
 import { authClient } from "./auth-client";
 
@@ -7,11 +7,10 @@ export function useAuthState() {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Initial load check
   useEffect(() => {
     async function initAuth() {
       try {
-        setIsLoading(true);
-
         const { data } = await authClient.getSession();
         if (data) {
           setUser(data.user);
@@ -27,20 +26,29 @@ export function useAuthState() {
         setIsLoading(false);
       }
     }
-
     initAuth();
   }, []);
+
+  // Smoothly set user session after login without trigger loading spinner
+  const setAuthData = (data: { user: User; session: Session } | null) => {
+    if (data) {
+      setUser(data.user);
+      setSession(data.session);
+    } else {
+      setUser(null);
+      setSession(null);
+    }
+  };
 
   const signOut = async () => {
     try {
       await authClient.signOut();
     } catch {
-      // Handle sign-out error if needed
     } finally {
       setUser(null);
       setSession(null);
     }
   };
 
-  return { isLoading, user, session, signOut };
+  return { isLoading, user, session, setAuthData, signOut };
 }

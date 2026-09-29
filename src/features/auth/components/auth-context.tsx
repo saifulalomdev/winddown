@@ -6,6 +6,7 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   session: Session | null;
+  setAuthData: (data: { user: User; session: Session } | null) => void;
   signOut: () => Promise<void>;
 }
 
