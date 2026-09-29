@@ -39,10 +39,8 @@ export function AuthIndex() {
       });
       const { data } = await authClient.getSession();
       if (data) {
-        // 1. Instantly update React context state (NO spinner flash!)
         setAuthData(data);
 
-        // 2. Smooth navigation
         navigate("/", { replace: true });
       }
       navigate("/");
