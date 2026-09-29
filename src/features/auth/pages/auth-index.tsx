@@ -4,12 +4,14 @@ import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { GoogleIcon } from "@/icon/google-icon";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { authClient } from '../auth-client';
 
 export function AuthIndex() {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation('auth');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const initGoogleAuth = async () => {
@@ -33,8 +35,7 @@ export function AuthIndex() {
         provider: "google",
         idToken: { token: result.idToken }
       });
-      const data = await authClient.getSession();
-      console.log(data)
+      navigate("/")
     } catch (error: any) {
       if (error.code === ErrorCode.SignInCanceled) {
         console.log('The user canceled the sign-in flow.');

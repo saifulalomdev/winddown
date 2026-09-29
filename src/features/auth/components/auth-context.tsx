@@ -1,12 +1,12 @@
 import React, { createContext, useContext } from "react";
+import type { Session, User } from "../auth-types";
 import { useAuthState } from "../auth-hooks";
 
 interface AuthContextType {
-  user: any | null;
+  user: User | null;
   isLoading: boolean;
-  isOffline: boolean;
+  session: Session | null;
   signOut: () => Promise<void>;
-  refetchSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);

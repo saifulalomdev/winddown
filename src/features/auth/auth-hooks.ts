@@ -1,45 +1,46 @@
-// import * as SecureStore from "expo-secure-store";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
+import type { Session, User } from "./auth-types";
 import { authClient } from "./auth-client";
 
-// const CACHED_USER_KEY = "offline_user_session";
-
 export function useAuthState() {
-  const [user, setUser] = useState<any | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isOffline, setIsOffline] = useState(false);
-
-  const initAuth = useCallback(async () => {
-    try {
-      setIsLoading(true);
-
-      const { data, error } = await authClient.getSession()
-      console.log(data, error);
-      setIsLoading(false);
-
-      try {
-
-      } catch {
-        setIsOffline(true);
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
+    async function initAuth() {
+      try {
+        setIsLoading(true);
+
+        const { data } = await authClient.getSession();
+        if (data) {
+          setUser(data.user);
+          setSession(data.session);
+        } else {
+          setUser(null);
+          setSession(null);
+        }
+      } catch {
+        setUser(null);
+        setSession(null);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     initAuth();
-  }, [initAuth]);
+  }, []);
 
   const signOut = async () => {
     try {
       await authClient.signOut();
     } catch {
-
+      // Handle sign-out error if needed
     } finally {
       setUser(null);
+      setSession(null);
     }
   };
 
-  return { isLoading, user, isOffline, signOut, refetchSession: initAuth };
+  return { isLoading, user, session, signOut };
 }

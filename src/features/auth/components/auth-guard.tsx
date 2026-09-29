@@ -1,26 +1,27 @@
 // src/features/auth/components/auth-guard.tsx
-import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "./auth-context";
 
-export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth();
+export function AuthGuard() {
+  const { user, session, isLoading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (isLoading) return;
 
-    // Checks if the current path starts with /auth
     const inAuthGroup = location.pathname.startsWith("/auth");
+    const isAuthenticated = Boolean(user && session);
 
-    if (!user && !inAuthGroup) {
+    if (!isAuthenticated && !inAuthGroup) {
       navigate("/auth", { replace: true });
-    } else if (user && inAuthGroup) {
+    }
+    else if (isAuthenticated && inAuthGroup) {
       navigate("/", { replace: true });
     }
-  }, [user, isLoading, location.pathname, navigate]);
+  }, [user, session, isLoading, location.pathname, navigate]);
 
   if (isLoading) {
     return (
@@ -30,5 +31,5 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  return <>{children}</>;
+  return <Outlet/>
 }
