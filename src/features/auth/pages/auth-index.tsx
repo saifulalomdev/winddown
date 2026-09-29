@@ -1,4 +1,4 @@
-import { ErrorCode, GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
+import { GoogleSignIn } from '@capawesome/capacitor-google-sign-in';
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
@@ -32,32 +32,36 @@ export function AuthIndex() {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
+
       const result = await GoogleSignIn.signIn();
+
+      // 💡 Catch if the native plugin fails to return a token in production APK
+      if (!result || !result.idToken) {
+        alert("Native Google SignIn succeeded but returned an empty ID token profile!");
+        return;
+      }
+
+      alert(`Native Success! Token found. Sending to: ${import.meta.env.VITE_API_BASE_URL || 'Fallback Default Link'}`);
+
       await authClient.signIn.social({
         provider: "google",
         idToken: { token: result.idToken }
       });
+
       const { data } = await authClient.getSession();
       if (data) {
         setAuthData(data);
-
         navigate("/", { replace: true });
       }
       navigate("/");
     } catch (error: any) {
-      if (error.code === ErrorCode.SignInCanceled) {
-        console.log('The user canceled the sign-in flow.');
-      } else if (error.code === ErrorCode.NoCredentialAvailable) {
-        console.log('No Google account is available on this device.');
-      } else if (error.code === ErrorCode.ProviderConfigurationError) {
-        console.log('Google Play services is not available or not up to date.');
-      } else {
-        console.log('Another error occurred:', error);
-      }
+      // 💡 Pops up the exact structural error directly onto your mobile display
+      alert(`APK Error Profile:\nCode: ${error.code}\nMessage: ${error.message || JSON.stringify(error)}`);
     } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <main className="flex flex-col justify-between h-dvh py-20 px-8">
