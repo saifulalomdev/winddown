@@ -29,20 +29,17 @@ jobs:
       - name: Build web app
         run: pnpm build
 
-      - name: Generate Android platform
-        run: npx cap add android
-
       - name: Sync Capacitor
-        run: npx cap sync android
-
-      - name: Generate app icons
-        run: npx @capacitor/assets generate --android
+        run: pnpm exec cap sync android
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build APK
         run: |
@@ -54,4 +51,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: android/app/build/outputs/apk/debug/
+          path: android/app/build/outputs/apk/debug/app-debug.apk
