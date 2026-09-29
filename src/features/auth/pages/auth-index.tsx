@@ -7,7 +7,6 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { authClient } from '../auth-client';
 
-
 export function AuthIndex() {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation('auth');
@@ -16,7 +15,7 @@ export function AuthIndex() {
     const initGoogleAuth = async () => {
       try {
         await GoogleSignIn.initialize({
-          clientId: '754679532343-7sk7voif90pa6d0ma9c92i48bs6p07fk.apps.googleusercontent.com',
+          clientId: '754679532343-pi39b5nuskja8fpuoc120h75msdqqhm7.apps.googleusercontent.com',
           scopes: ['profile', 'email'],
         });
       } catch (e) {
@@ -29,16 +28,12 @@ export function AuthIndex() {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      const result = await GoogleSignIn.signIn({
-        
-      });
-
-      const data = await authClient.signIn.social({
+      const result = await GoogleSignIn.signIn();
+      await authClient.signIn.social({
         provider: "google",
-        idToken: {
-          token: result.idToken
-        }
-      })
+        idToken: { token: result.idToken }
+      });
+      const data = await authClient.getSession();
       console.log(data)
     } catch (error: any) {
       if (error.code === ErrorCode.SignInCanceled) {
@@ -56,7 +51,7 @@ export function AuthIndex() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-dvh p-10">
+    <main className="flex flex-col justify-between h-dvh p-10">
       <AuthBranding />
       <div className="space-y-3 w-full">
         <LanguageSwitcher />
@@ -70,7 +65,7 @@ export function AuthIndex() {
           {isLoading && <Spinner />}
         </Button>
       </div>
-    </div>
+    </main>
   );
 }
 
