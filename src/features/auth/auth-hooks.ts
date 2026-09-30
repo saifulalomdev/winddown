@@ -15,6 +15,8 @@ export function useAuthState() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
 
   // Helper to sync React state and persistent storage
   const setAuthData = useCallback((data: AuthData | null) => {
@@ -92,7 +94,7 @@ export function useAuthState() {
 
   const signOut = async () => {
     try {
-      setIsLoading(true)
+      setIsLoggingOut(true)
       const status = await Network.getStatus();
       if (status.connected) {
         await authClient.signOut();
@@ -102,9 +104,9 @@ export function useAuthState() {
     } finally {
       // Clear offline storage and reset state
       setAuthData(null);
-      setIsLoading(false)
+      setIsLoggingOut(false)
     }
   };
 
-  return { isLoading, user, session, setAuthData, signOut };
+  return { isLoading,isLoggingOut, user, session, setAuthData, signOut};
 }

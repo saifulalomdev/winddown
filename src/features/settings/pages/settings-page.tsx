@@ -18,7 +18,7 @@ import { useTheme } from "@/components/theme-provider"
 import { Header } from "@/components/header";
 
 export function SettingsPage() {
-  const { user, signOut, isLoading } = useAuth();
+  const { user, signOut, isLoading, isLoggingOut } = useAuth();
   const { i18n } = useTranslation();
   const { theme, setTheme } = useTheme();
 
@@ -167,7 +167,7 @@ export function SettingsPage() {
           >
             <LogOut className="h-4 w-4" />
             <span>Log Out</span>
-            {isLoading && <Spinner />}
+            {isLoggingOut && <Spinner />}
           </Button>
         </div>
       </div>
