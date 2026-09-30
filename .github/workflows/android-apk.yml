@@ -40,11 +40,6 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Restore Project Debug Keystore
-        run: |
-          echo "${{ secrets.DEBUG_KEYSTORE_BASE64 }}" | base64 -d > android/app/debug.keystore
-
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 

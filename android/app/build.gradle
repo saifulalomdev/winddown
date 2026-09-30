@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
 
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'AndroidDebugKey'
+            keyPassword 'android'
+        }
+    }
 
     namespace = "com.saifulalom.ezorder"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -22,6 +30,10 @@ android {
     }
     
     buildTypes {
+        debug {
+            // DO NOT REMOVE: FORCE THE DEBUG TYPE TO USE YOUR INJECTED SIGNING KEY
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
