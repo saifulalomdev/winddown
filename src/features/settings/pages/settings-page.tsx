@@ -11,19 +11,46 @@ import {
   Globe,
   Database,
   ChevronRight,
+  Sun,
+  Moon,
+  Laptop,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
+import { useTheme } from "@/components/theme-provider"; // 1. Import useTheme
 
 export function SettingsPage() {
-  const { user, signOut , isLoading } = useAuth();
+  const { user, signOut, isLoading } = useAuth();
   const { isOnline } = useInternetConnection();
   const { i18n } = useTranslation();
+  const { theme, setTheme } = useTheme(); // 2. Access current theme and setTheme function
 
   const toggleLanguage = () => {
     const nextLang = i18n.language === "bn" ? "en" : "bn";
     i18n.changeLanguage(nextLang);
   };
+
+  // Cycle through Light -> Dark -> System
+  const cycleTheme = () => {
+    if (theme === "light") setTheme("dark");
+    else if (theme === "dark") setTheme("system");
+    else setTheme("light");
+  };
+
+  // Helper to get current active icon and text
+  const getThemeInfo = () => {
+    switch (theme) {
+      case "light":
+        return { label: "Light Mode", icon: Sun };
+      case "dark":
+        return { label: "Dark Mode", icon: Moon };
+      default:
+        return { label: "System Default", icon: Laptop };
+    }
+  };
+
+  const currentTheme = getThemeInfo();
+  const ThemeIcon = currentTheme.icon;
 
   return (
     <div className="flex flex-col gap-4 p-4 pb-20 max-w-md mx-auto">
@@ -106,9 +133,10 @@ export function SettingsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-4 pt-0 divide-y divide-border">
+          {/* Language Switcher */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center justify-between w-full py-3 text-left"
+            className="flex items-center justify-between w-full py-3 text-left hover:bg-muted/50 transition-colors"
           >
             <div className="flex items-center gap-3">
               <Globe className="h-4 w-4 text-muted-foreground" />
@@ -120,6 +148,23 @@ export function SettingsPage() {
               </div>
             </div>
             <span className="text-xs font-semibold text-primary">Switch</span>
+          </button>
+
+          {/* 3. Theme Switcher */}
+          <button
+            onClick={cycleTheme}
+            className="flex items-center justify-between w-full py-3 text-left hover:bg-muted/50 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <ThemeIcon className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <p className="text-sm font-medium">Appearance</p>
+                <p className="text-xs text-muted-foreground">
+                  {currentTheme.label}
+                </p>
+              </div>
+            </div>
+            <span className="text-xs font-semibold text-primary">Change</span>
           </button>
         </CardContent>
       </Card>
@@ -134,7 +179,7 @@ export function SettingsPage() {
         >
           <LogOut className="h-4 w-4" />
           <span>Log Out</span>
-          {isLoading&& <Spinner/>}
+          {isLoading && <Spinner />}
         </Button>
       </div>
     </div>

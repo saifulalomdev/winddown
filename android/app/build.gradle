@@ -4,16 +4,6 @@ android {
     namespace = "com.saifulalom.ezorder"
     compileSdk = rootProject.ext.compileSdkVersion
 
-    // 🚨 ADD THIS SIGNING CONFIGURATION PROFILE FOR CI/CD COMPATIBILITY
-    signingConfigs {
-        debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'AndroidDebugKey'
-            keyPassword 'android'
-        }
-    }
-
     defaultConfig {
         // DO NOT REMOVE: This must match the package name registered in your Google Cloud Console Android OAuth client ID.
         applicationId "com.saifulalom.ezorder"
@@ -30,10 +20,6 @@ android {
     }
     
     buildTypes {
-        debug {
-            // 🚨 FORCE THE DEBUG TYPE TO USE YOUR INJECTED SIGNING KEY
-            signingConfig signingConfigs.debug
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

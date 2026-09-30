@@ -29,7 +29,6 @@ export function useAuthState() {
     initAuth();
   }, []);
 
-  // Smoothly set user session after login without trigger loading spinner
   const setAuthData = (data: { user: User; session: Session } | null) => {
     if (data) {
       setUser(data.user);
