@@ -1,0 +1,1 @@
+export * from "@/features/product/server/product-table"

@@ -10,7 +10,7 @@ export function Header({ className, children }: PageHeaderProps) {
     return (
         <header
             className={cn(
-                "flex flex-col sm:flex-row fixed px-6 py-4 top-0 pt-[calc(env(safe-area-inset-top)+8px)]  w-full bg-background left-0 sm:items-center justify-between gap-4 pb-2",
+                "flex sm:flex-row fixed px-6 py-4 top-0 pt-[calc(env(safe-area-inset-top)+8px)]  w-full bg-background left-0 sm:items-center justify-between gap-4 pb-2",
                 className
             )}>
             {children}

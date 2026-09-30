@@ -1,0 +1,39 @@
+import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite';
+import { drizzle } from 'drizzle-orm/sqlite-proxy';
+import * as schema from './schema';
+
+const sqlite = new SQLiteConnection(CapacitorSQLite);
+
+export async function initDb() {
+  // 1. Create native SQLite connection
+  const conn = await sqlite.createConnection('ezorder.db', false, 'no-encryption', 1, false);
+  await conn.open();
+
+  // 2. Use drizzle sqlite-proxy with proper query/run handling
+  const db = drizzle(async (sql, params, method) => {
+    try {
+      // For write operations (INSERT, UPDATE, DELETE)
+      if (method === 'run') {
+        const res = await conn.run(sql, params);
+        return { rows: [], insertId: res.changes?.lastId };
+      }
+
+      // For read operations (SELECT)
+      const res = await conn.query(sql, params);
+      
+      // Convert result rows to arrays if Drizzle expects array-formatted rows
+      const rows = (res.values ?? []).map((row) => Object.values(row));
+
+      if (method === 'get') {
+        return { rows: rows[0] ?? [] };
+      }
+
+      return { rows };
+    } catch (e: any) {
+      console.error('Error in SQLite query:', e);
+      return { rows: [] };
+    }
+  }, { schema });
+
+  return db;
+}

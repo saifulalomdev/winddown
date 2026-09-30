@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useInternetConnection } from "@/hooks/use-internet-connection";
-import { Search, Bell, Wifi, WifiOff } from "lucide-react";
+import { Bell, Wifi, WifiOff, RefreshCw, CloudOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth";
 import { Header } from "@/components/header";
@@ -9,6 +9,7 @@ export function DashboardHeader() {
   const { user } = useAuth();
   const { isOnline } = useInternetConnection();
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
+  const pendingSyncCount = 30;
 
   return (
     <Header>
@@ -41,10 +42,29 @@ export function DashboardHeader() {
             </div>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" className="shrink-0 sm:hidden">
-            <Search className="h-4 w-4" />
+        <div className="flex items-center gap-2">
+          {/* Offline / Sync Queue Action */}
+          <Button
+            variant="outline"
+            size="icon"
+            className="shrink-0 relative sm:hidden"
+            onClick={() => alert('Syncing offline queue...')}
+          >
+            {isOnline ? (
+              <RefreshCw className="h-4 w-4 text-emerald-600" />
+            ) : (
+              <CloudOff className="h-4 w-4 text-red-500" />
+            )}
+
+            {/* Badge showing pending offline changes */}
+            {pendingSyncCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-amber-500 text-white text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center">
+                {pendingSyncCount}
+              </span>
+            )}
           </Button>
+
+          {/* Notifications Action */}
           <Button variant="outline" size="icon" className="shrink-0 sm:hidden">
             <Bell className="h-4 w-4" />
           </Button>
