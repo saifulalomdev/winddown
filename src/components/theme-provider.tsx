@@ -1,6 +1,8 @@
 // src/components/theme-provider.tsx
 import { createContext, useContext, useEffect, useState } from "react"
 import { Storage } from "@/utils/storage-helper"
+import { StatusBar, Style } from "@capacitor/status-bar"
+import { Capacitor } from "@capacitor/core"
 
 type Theme = "dark" | "light" | "system"
 
@@ -33,7 +35,7 @@ export function ThemeProvider({
   const [theme, setThemeState] = useState<Theme>(defaultTheme)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  // 1. Load saved theme from Storage on startup
+  // 1. Load saved theme from Storage
   useEffect(() => {
     async function loadSavedTheme() {
       try {
@@ -51,29 +53,43 @@ export function ThemeProvider({
     loadSavedTheme()
   }, [storageKey])
 
-  // 2. Apply theme class to <html> element and listen to system theme changes
+  // 2. Apply theme class and update Native Status Bar
   useEffect(() => {
     const root = window.document.documentElement
 
-    const applyTheme = (targetTheme: Theme) => {
-      root.classList.remove("light", "dark")
+    const applyThemeAndStatusBar = async (targetTheme: Theme) => {
+      let isDark = false
 
       if (targetTheme === "system") {
-        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light"
-        root.classList.add(systemTheme)
+        isDark = window.matchMedia("(prefers-color-scheme: dark)").matches
       } else {
-        root.classList.add(targetTheme)
+        isDark = targetTheme === "dark"
+      }
+
+      // Update HTML root class for web/Tailwind
+      root.classList.remove("light", "dark")
+      root.classList.add(isDark ? "dark" : "light")
+
+      // Update Native Status Bar Icons & Text on iOS/Android
+      if (Capacitor.isNativePlatform()) {
+        try {
+          // Style.Dark  -> Light text/icons for DARK backgrounds
+          // Style.Light -> Dark text/icons for LIGHT backgrounds
+          await StatusBar.setStyle({
+            style: isDark ? Style.Dark : Style.Light,
+          })
+        } catch (error) {
+          console.error("Failed to set status bar style:", error)
+        }
       }
     }
 
-    applyTheme(theme)
+    applyThemeAndStatusBar(theme)
 
     // Listen for OS system theme changes when "system" is selected
     if (theme === "system") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-      const handleChange = () => applyTheme("system")
+      const handleChange = () => applyThemeAndStatusBar("system")
 
       mediaQuery.addEventListener("change", handleChange)
       return () => mediaQuery.removeEventListener("change", handleChange)
