@@ -5,7 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth";
 import { Header } from "@/components/header";
 
-export function DashboardHeader() {
+interface TabHeaderProps {
+  showAvatar?: boolean;
+  title?: string
+}
+
+export function TabHeader({ showAvatar, title }: TabHeaderProps) {
   const { user } = useAuth();
   const { isOnline } = useInternetConnection();
   const userInitial = user?.name ? user.name.charAt(0).toUpperCase() : "U";
@@ -13,7 +18,7 @@ export function DashboardHeader() {
   return (
     <Header>
       <div className="flex justify-between items-center w-full sm:w-auto">
-        <div className="flex items-center gap-3">
+        {showAvatar && <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
             <AvatarImage src={user?.image ?? ""} alt={user?.name ?? "User"} />
             <AvatarFallback className="bg-primary/10 text-primary font-bold">
@@ -41,6 +46,9 @@ export function DashboardHeader() {
             </div>
           </div>
         </div>
+        }
+        {title && <h1 className="text-xl font-bold tracking-tight">{title}</h1>}
+        
         <div className="flex gap-2">
           <Button variant="outline" size="icon" className="shrink-0 sm:hidden">
             <Search className="h-4 w-4" />

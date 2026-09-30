@@ -7,6 +7,7 @@ import { DashboardPage } from './features/dashboard/pages/dashboard-page';
 import { useEffect, useState } from 'react';
 import { initI18n } from './lib/i18n';
 import { ThemeProvider } from './components/theme-provider';
+import ProductPage from './features/product/pages/product-page';
 
 export default function App() {
   const [isI18nReady, setIsI18nReady] = useState(false);
@@ -27,7 +28,7 @@ export default function App() {
               <Route element={<BaseLayout />}>
                 <Route path="/" element={<TabLayout />}>
                   <Route index element={<DashboardPage />} />
-                  <Route path='products' element={<div>Products Content this</div>} />
+                  <Route path='products' element={<ProductPage/>} />
                   <Route path='orders' element={<div>Products Content this</div>} />
                   <Route path='outlets' element={<div>Products Content this</div>} />
                   <Route path='settings' element={<SettingsPage />} />

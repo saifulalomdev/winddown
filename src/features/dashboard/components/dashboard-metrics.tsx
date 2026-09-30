@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const metrics = [
   {
-    title: "Total Revenue",
+    title: "Total Sales",
     value: "$45,231.89",
     change: "+20.1%",
     isPositive: true,
