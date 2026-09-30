@@ -1,8 +1,9 @@
 import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
+import { v4 as uuidv4 } from 'uuid';
 
 export const products = sqliteTable('products', {
   // Generate random UUID automatically
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
 
   name: text('name').notNull(),
   sku: text('sku').unique(),
