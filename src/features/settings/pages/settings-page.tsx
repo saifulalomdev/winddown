@@ -20,7 +20,7 @@ import { Header } from "@/components/header";
 export function SettingsPage() {
   const { user, signOut, isLoading } = useAuth();
   const { i18n } = useTranslation();
-  const { theme, setTheme } = useTheme(); // 2. Access current theme and setTheme function
+  const { theme, setTheme } = useTheme();
 
   const toggleLanguage = () => {
     const nextLang = i18n.language === "bn" ? "en" : "bn";
@@ -53,6 +53,7 @@ export function SettingsPage() {
     <>
       <Header>
         <h1 className="text-xl font-bold tracking-tight">Settings</h1>
+
       </Header>
 
       <div className="flex flex-col gap-4 p-1 max-w-md mx-auto">
