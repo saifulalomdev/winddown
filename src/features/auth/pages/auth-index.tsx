@@ -62,7 +62,7 @@ export function AuthIndex() {
 
 
   return (
-    <main className="flex flex-col justify-between h-dvh py-20 px-8">
+    <main className="flex flex-col justify-between h-dvh py-10 px-6">
       <AuthBranding />
       <div className="space-y-3 w-full">
         <LanguageSwitcher />

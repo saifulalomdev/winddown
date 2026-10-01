@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { App as CapacitorApp } from '@capacitor/app';
+import { useEffect, useRef, useState } from 'react';
 import { AppAlert } from '@/components/app-alert';
 
 export function CapacitorBackButton() {

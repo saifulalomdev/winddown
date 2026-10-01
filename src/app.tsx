@@ -22,13 +22,12 @@ export default function App() {
   }, []);
 
   if (!isI18nReady) {
-    return null; // Or a loading spinner
+    return null;
   }
 
   return (
     <BrowserRouter>
       <CapacitorBackButton/>
-
       <ThemeProvider defaultTheme="system" storageKey="user_theme">
         <AuthProvider>
           <CartProvider>
