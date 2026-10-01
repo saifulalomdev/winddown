@@ -12,20 +12,23 @@ import { ShopPage } from './features/shop/pages/shop-page';
 import { OrderPage } from './features/order/pages/order-page';
 import { CartProvider } from './features/cart/components/cart-context';
 import { CartPage } from './features/cart/pages/cart-page';
+import { CapacitorBackButton } from './components/back-button';
 
 export default function App() {
   const [isI18nReady, setIsI18nReady] = useState(false);
 
-  // 
   useEffect(() => {
     initI18n().then(() => setIsI18nReady(true));
   }, []);
 
   if (!isI18nReady) {
-    return null; // Or show a loading spinner
+    return null; // Or a loading spinner
   }
+
   return (
     <BrowserRouter>
+      <CapacitorBackButton/>
+
       <ThemeProvider defaultTheme="system" storageKey="user_theme">
         <AuthProvider>
           <CartProvider>
@@ -34,12 +37,12 @@ export default function App() {
                 <Route element={<BaseLayout />}>
                   <Route path="/" element={<TabLayout />}>
                     <Route index element={<DashboardPage />} />
-                    <Route path='products' element={<ProductPage />} />
-                    <Route path='orders' element={<OrderPage />} />
-                    <Route path='outlets' element={<ShopPage />} />
-                    <Route path='settings' element={<SettingsPage />} />
+                    <Route path="products" element={<ProductPage />} />
+                    <Route path="orders" element={<OrderPage />} />
+                    <Route path="outlets" element={<ShopPage />} />
+                    <Route path="settings" element={<SettingsPage />} />
                   </Route>
-                  <Route path='cart' element={<CartPage />} />
+                  <Route path="cart" element={<CartPage />} />
                   <Route path="auth" element={<AuthIndex />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
