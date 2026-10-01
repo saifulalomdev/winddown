@@ -40,9 +40,7 @@ export function AuthIndex() {
         alert("Native Google SignIn succeeded but returned an empty ID token profile!");
         return;
       }
-
-      alert(`Native Success! Token found. Sending to: ${import.meta.env.VITE_API_BASE_URL || 'Fallback Default Link'}`);
-
+      
       await authClient.signIn.social({
         provider: "google",
         idToken: { token: result.idToken }
