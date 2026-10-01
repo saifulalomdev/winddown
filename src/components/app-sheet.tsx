@@ -5,7 +5,7 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-} from '@/components/ui/sheet';
+} from './ui/sheet';
 
 interface AppSheetProps {
   isOpen: boolean;

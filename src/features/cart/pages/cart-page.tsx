@@ -1,8 +1,8 @@
-// src/features/cart/pages/cart-page.tsx
 import { useState } from "react";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/features/cart/components/cart-context";
+import { AppAlert } from "@/components/app-alert";
 import {
   Trash2,
   Plus,
@@ -27,12 +27,18 @@ export function CartPage() {
 
   const navigate = useNavigate();
   const [note, setNote] = useState("");
+  const [isClearCartOpen, setIsClearCartOpen] = useState(false);
 
   const itemList = Object.values(items);
 
   const handleConfirmOrder = () => {
     // Navigate to checkout or process order internally
     navigate("/checkout", { state: { note } });
+  };
+
+  const handleClearCart = () => {
+    clearCart();
+    setIsClearCartOpen(false);
   };
 
   return (
@@ -58,18 +64,17 @@ export function CartPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={clearCart}
+            onClick={() => setIsClearCartOpen(true)}
             className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
           >
             Clear All
           </Button>
         )}
       </Header>
+
       <div className="flex flex-col min-h-screen bg-background">
-
-
         {/* Main Content Area */}
-        <main className="flex-1 p-3 pt-16  max-w-md mx-auto w-full space-y-3">
+        <main className="flex-1 p-3 pt-16 max-w-md mx-auto w-full space-y-3">
           {itemList.length === 0 ? (
             /* Empty State */
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -228,10 +233,7 @@ export function CartPage() {
                 </p>
               </div>
 
-              <Button
-                onClick={handleConfirmOrder}
-                size="sm"
-              >
+              <Button onClick={handleConfirmOrder} size="sm">
                 <CheckCircle2 className="h-4 w-4" />
                 <span>Confirm Order</span>
               </Button>
@@ -239,7 +241,17 @@ export function CartPage() {
           </div>
         )}
       </div>
-    </>
 
+      {/* Clear Cart Confirmation Dialog */}
+      <AppAlert
+        isOpen={isClearCartOpen}
+        onClose={() => setIsClearCartOpen(false)}
+        onConfirm={handleClearCart}
+        title="Clear your cart?"
+        cancelLabel="Keep Items"
+        confirmLabel="Clear All"
+        description="Are you sure you want to remove all items from your cart? This action cannot be undone."
+      />
+    </>
   );
 }
