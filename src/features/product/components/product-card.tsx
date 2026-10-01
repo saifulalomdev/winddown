@@ -78,8 +78,7 @@ export function ProductCard({
   const productImage = product.image || (product.images && product.images[0]);
 
   return (
-    <div
-      className={cn(
+    <div className={cn(
         "relative flex items-stretch gap-3 p-2.5 rounded-xl border bg-card text-card-foreground transition-all shadow-sm",
         isSelected
           ? "border-primary ring-1 ring-primary/20 bg-primary/5"

@@ -34,7 +34,7 @@ const metrics = [
 
 export function DashboardMetrics() {
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    <>
       {metrics.map((metric, i) => {
         const Icon = metric.icon;
         return (
@@ -60,6 +60,6 @@ export function DashboardMetrics() {
           </Card>
         );
       })}
-    </div>
+    </>
   );
 }

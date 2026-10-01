@@ -48,33 +48,27 @@ export function CartPage() {
         <div className="flex items-center gap-2">
           <ArrowLeft
             onClick={() => navigate(-1)}
-            className="shrink-0 -ml-2"
+            className="shrink-0"
             aria-label="Go back"
-            size={28}
+            size={24}
           />
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">Order Cart</h1>
-            <p className="text-xs text-muted-foreground">
-              {totalItems} {totalItems === 1 ? "item" : "items"} selected
-            </p>
-          </div>
+          <h1 className="text-xl font-bold tracking-tight">Order Cart</h1>
         </div>
 
         {itemList.length > 0 && (
           <Button
             variant="ghost"
-            size="sm"
             onClick={() => setIsClearCartOpen(true)}
-            className="text-xs text-destructive hover:text-destructive hover:bg-destructive/10"
+            className="text-destructive hover:text-destructive hover:bg-destructive/10"
           >
-            Clear All
+            Clear Cart
           </Button>
         )}
       </Header>
 
       <div className="flex flex-col min-h-screen bg-background">
         {/* Main Content Area */}
-        <main className="flex-1 p-3 pt-16 max-w-md mx-auto w-full space-y-3">
+        <main className="flex-1 pt-16 max-w-md mx-auto w-full space-y-3">
           {itemList.length === 0 ? (
             /* Empty State */
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -106,7 +100,7 @@ export function CartPage() {
                   className="flex items-stretch gap-3 p-2.5 rounded-xl border border-border bg-card shadow-sm"
                 >
                   {/* Product Image */}
-                  <div className="w-16 h-16 shrink-0 aspect-square rounded-lg bg-muted flex items-center justify-center border border-border/50 overflow-hidden self-center">
+                  <div className="w-16 h-16 shrink-0 aspect-square rounded-lg bg-muted flex items-center justify-center border border-border/50 self-center">
                     {product.image ? (
                       <img
                         src={product.image}
