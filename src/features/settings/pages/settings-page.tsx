@@ -11,6 +11,7 @@ import {
   Sun,
   Moon,
   Laptop,
+  CircleQuestionMark
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Spinner } from "@/components/ui/spinner";
@@ -53,7 +54,9 @@ export function SettingsPage() {
     <>
       <Header>
         <h1 className="text-xl font-bold tracking-tight">Settings</h1>
-
+        <Button size="icon" variant="outline">
+          <CircleQuestionMark />
+        </Button>
       </Header>
 
       <div className="flex flex-col gap-4 p-1 max-w-md mx-auto">

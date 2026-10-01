@@ -10,10 +10,13 @@ import { ThemeProvider } from './components/theme-provider';
 import ProductPage from './features/product/pages/product-page';
 import { ShopPage } from './features/shop/pages/shop-page';
 import { OrderPage } from './features/order/pages/order-page';
+import { CartProvider } from './features/cart/components/cart-context';
+import { CartPage } from './features/cart/pages/cart-page';
 
 export default function App() {
   const [isI18nReady, setIsI18nReady] = useState(false);
 
+  // 
   useEffect(() => {
     initI18n().then(() => setIsI18nReady(true));
   }, []);
@@ -25,21 +28,24 @@ export default function App() {
     <BrowserRouter>
       <ThemeProvider defaultTheme="system" storageKey="user_theme">
         <AuthProvider>
-          <Routes>
-            <Route element={<AuthGuard />}>
-              <Route element={<BaseLayout />}>
-                <Route path="/" element={<TabLayout />}>
-                  <Route index element={<DashboardPage />} />
-                  <Route path='products' element={<ProductPage/>} />
-                  <Route path='orders' element={<OrderPage/>} />
-                  <Route path='outlets' element={<ShopPage/>} />
-                  <Route path='settings' element={<SettingsPage />} />
+          <CartProvider>
+            <Routes>
+              <Route element={<AuthGuard />}>
+                <Route element={<BaseLayout />}>
+                  <Route path="/" element={<TabLayout />}>
+                    <Route index element={<DashboardPage />} />
+                    <Route path='products' element={<ProductPage />} />
+                    <Route path='orders' element={<OrderPage />} />
+                    <Route path='outlets' element={<ShopPage />} />
+                    <Route path='settings' element={<SettingsPage />} />
+                  </Route>
+                  <Route path='cart' element={<CartPage />} />
+                  <Route path="auth" element={<AuthIndex />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
-                <Route path="auth" element={<AuthIndex />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
-            </Route>
-          </Routes>
+            </Routes>
+          </CartProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

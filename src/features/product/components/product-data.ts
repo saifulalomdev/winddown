@@ -1,0 +1,87 @@
+// src/features/product/components/product-data.ts
+
+import type { Product } from "./product-card";
+
+
+export const DEMO_PRODUCTS: Product[] = [
+  {
+    id: "prod-001",
+    name: "Radhuni Turmeric Powder 200g",
+    sku: "RAD-TUR-200",
+    distributorPrice: 78,
+    shopPrice: 85,
+    mrp: 95,
+    unit: "Pcs",
+    stock: 150,
+  },
+  {
+    id: "prod-002",
+    name: "Ruchi Chanachur BBQ 150g",
+    sku: "RUC-CHA-150",
+    distributorPrice: 32,
+    shopPrice: 35,
+    mrp: 40,
+    unit: "Pcs",
+    stock: 300,
+  },
+  {
+    id: "prod-003",
+    name: "AARONG Dairy Liquid Milk 1L",
+    sku: "AAR-MLK-1L",
+    distributorPrice: 82,
+    shopPrice: 90,
+    mrp: 100,
+    unit: "Pcs",
+    stock: 45,
+  },
+  {
+    id: "prod-004",
+    name: "Pran Frooto Mango Juice 250ml",
+    sku: "PRN-FRU-250",
+    distributorPrice: 22,
+    shopPrice: 25,
+    mrp: 30,
+    unit: "Bottle",
+    stock: 200,
+  },
+  {
+    id: "prod-005",
+    name: "Fresh Refined Sugar 1kg",
+    sku: "FRS-SGR-1K",
+    distributorPrice: 125,
+    shopPrice: 132,
+    mrp: 140,
+    unit: "Kg",
+    stock: 80,
+  },
+  {
+    id: "prod-006",
+    name: "Wheel Washing Powder 500g",
+    sku: "WHL-WSH-500",
+    distributorPrice: 52,
+    shopPrice: 58,
+    mrp: 65,
+    unit: "Pcs",
+    stock: 0, // Out of stock demo case
+  },
+  {
+    id: "prod-007",
+    name: "Ispahani Mirzapore Tea 400g",
+    sku: "ISP-TEA-400",
+    distributorPrice: 210,
+    shopPrice: 230,
+    mrp: 250,
+    unit: "Pack",
+    stock: 95,
+  },
+  {
+    id: "prod-008",
+    name: "Teer Fortified Soybean Oil 2L",
+    sku: "TEE-OIL-2L",
+    distributorPrice: 310,
+    shopPrice: 330,
+    mrp: 350,
+    unit: "Bottle",
+    stock: 120,
+  },
+];

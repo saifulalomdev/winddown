@@ -17,4 +17,5 @@ export interface User {
   emailVerified: boolean;
   name: string;
   image?: string | null | undefined;
+  activeOrganizationId?: string | null | undefined;
 };

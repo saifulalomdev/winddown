@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FormProvider, Controller, type UseFormReturn } from 'react-hook-form';
+import { Controller, type UseFormReturn } from 'react-hook-form';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +10,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field';
 import type { CreateProductInput } from '../server/product-types';
+import { CameraIcon ,ImagePlus} from 'lucide-react';
 
 interface ProductFormProps {
   form: UseFormReturn<CreateProductInput>;
@@ -81,7 +82,6 @@ export function ProductForm({
   };
 
   return (
-    <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4 rounded-lg">
           {/* Product Name */}
@@ -230,7 +230,7 @@ export function ProductForm({
                 disabled={isLoading}
                 onClick={handleTakePhoto}
               >
-                📷 Take Photo
+                <CameraIcon /> Take Photo
               </Button>
               <Button
                 type="button"
@@ -238,7 +238,7 @@ export function ProductForm({
                 disabled={isLoading}
                 onClick={handlePickPhoto}
               >
-                🖼️ Pick Photo
+                <ImagePlus/> Pick Photo
               </Button>
             </div>
 
@@ -282,6 +282,5 @@ export function ProductForm({
           </Button>
         </div>
       </form>
-    </FormProvider>
   );
 }

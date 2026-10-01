@@ -6,8 +6,7 @@ import { Input } from '@/components/ui/input'
 export function ShopPage() {
     return (
         <>
-            <Header className='flex flex-col gap-3'>
-                <div className='flex justify-between items-center'>
+            <Header>
                     <h1 className="text-xl font-bold tracking-tight">
                         Shops
                     </h1>
@@ -15,7 +14,6 @@ export function ShopPage() {
                         <PlusIcon size={30} />
                     </Button>
 
-                </div>
             </Header>
             <div>
                 <Input placeholder='Search shops' />
