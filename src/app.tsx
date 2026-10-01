@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { AuthProvider, AuthGuard, AuthIndex } from './features/auth';
+import { AuthProvider, AuthGuard, AuthLoginPage } from './features/auth';
 import { TabLayout } from './layouts/layout-tab';
 import { BaseLayout } from './layouts/layout-base';
 import { SettingsPage } from './features/settings/pages/settings-page';
@@ -42,7 +42,7 @@ export default function App() {
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
                   <Route path="cart" element={<CartPage />} />
-                  <Route path="auth" element={<AuthIndex />} />
+                  <Route path="auth" element={<AuthLoginPage />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               </Route>

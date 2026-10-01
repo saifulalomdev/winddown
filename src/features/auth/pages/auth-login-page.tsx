@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { authClient } from '../auth-client';
 import { useAuth } from '../components/auth-context';
 
-export function AuthIndex() {
+export function AuthLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation('auth');
   const { setAuthData } = useAuth()
