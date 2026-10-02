@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useCart } from "@/features/cart/components/cart-context";
 import { AppAlert } from "@/components/app-alert";
 import {
@@ -14,6 +15,154 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import type { Product } from "@/features/product/components/product-card";
+
+interface CartItemRowProps {
+  product: Product;
+  quantity: number;
+  onUpdateQuantity: (productId: string, newQty: number) => void;
+  onRemoveItem: (productId: string) => void;
+}
+
+function CartItemRow({
+  product,
+  quantity,
+  onUpdateQuantity,
+  onRemoveItem,
+}: CartItemRowProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [inputValue, setInputValue] = useState(String(quantity));
+
+  const maxStock = product.stock ?? Infinity;
+
+  useEffect(() => {
+    if (!isEditing) {
+      setInputValue(String(quantity));
+    }
+  }, [quantity, isEditing]);
+
+  const commitQuantity = (val: number) => {
+    const validQty = Math.max(0, Math.min(val, maxStock));
+    if (validQty === 0) {
+      onRemoveItem(product.id);
+    } else {
+      onUpdateQuantity(product.id, validQty);
+    }
+  };
+
+  const handleInputBlur = () => {
+    setIsEditing(false);
+    const parsed = parseInt(inputValue, 10);
+    if (isNaN(parsed) || parsed <= 0) {
+      onRemoveItem(product.id);
+    } else {
+      commitQuantity(parsed);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleInputBlur();
+    }
+  };
+
+  return (
+    <div className="flex items-stretch gap-3 p-2.5 rounded-xl border border-border bg-card shadow-sm">
+      {/* Product Image */}
+      <div className="w-16 h-16 shrink-0 aspect-square rounded-lg bg-muted flex items-center justify-center border border-border/50 self-center">
+        {product.image ? (
+          <img
+            src={product.image}
+            alt={product.name}
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <Package className="h-6 w-6 text-muted-foreground/50" />
+        )}
+      </div>
+
+      {/* Details & Actions */}
+      <div className="flex-1 flex flex-col justify-between min-w-0">
+        <div className="flex items-start justify-between gap-1">
+          <div className="min-w-0">
+            <span className="text-[10px] font-mono text-muted-foreground uppercase">
+              SKU: {product.sku}
+            </span>
+            <h4 className="text-xs font-semibold text-foreground leading-snug line-clamp-1">
+              {product.name}
+            </h4>
+            <p className="text-xs font-bold text-primary mt-0.5">
+              ৳{product.shopPrice.toLocaleString()} / {product.unit}
+            </p>
+          </div>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onRemoveItem(product.id)}
+            className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0"
+            aria-label="Remove item"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+
+        {/* Quantity Controller & Subtotal */}
+        <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-border/40">
+          <div className="flex items-center gap-1 bg-muted/60 border border-border/60 rounded-lg p-0.5">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onUpdateQuantity(product.id, quantity - 1)}
+              className="h-6 w-6 rounded-md hover:bg-background"
+            >
+              <Minus className="h-3 w-3" />
+            </Button>
+
+            {/* Editable Direct Input */}
+            <div className="flex items-center justify-center px-1 min-w-[28px]">
+              {isEditing ? (
+                <Input
+                  type="number"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onBlur={handleInputBlur}
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                  className="w-10 h-5 text-center text-xs font-bold text-foreground bg-background rounded border border-primary p-0 focus:outline-none"
+                />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(true);
+                    setInputValue(String(quantity));
+                  }}
+                  className="text-xs font-bold text-foreground hover:bg-background/80 px-1 py-0.5 rounded transition-colors"
+                >
+                  {quantity}
+                </button>
+              )}
+            </div>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onUpdateQuantity(product.id, quantity + 1)}
+              className="h-6 w-6 rounded-md hover:bg-background"
+            >
+              <Plus className="h-3 w-3" />
+            </Button>
+          </div>
+
+          <p className="text-xs font-bold text-foreground">
+            ৳{(product.shopPrice * quantity).toLocaleString()}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function CartPage() {
   const {
@@ -32,7 +181,6 @@ export function CartPage() {
   const itemList = Object.values(items);
 
   const handleConfirmOrder = () => {
-    // Navigate to checkout or process order internally
     navigate("/checkout", { state: { note } });
   };
 
@@ -48,7 +196,7 @@ export function CartPage() {
         <div className="flex items-center gap-2">
           <ArrowLeft
             onClick={() => navigate(-1)}
-            className="shrink-0"
+            className="shrink-0 cursor-pointer"
             aria-label="Go back"
             size={24}
           />
@@ -68,7 +216,7 @@ export function CartPage() {
 
       <div className="flex flex-col min-h-screen bg-background">
         {/* Main Content Area */}
-        <main className="flex-1 pt-16 max-w-md mx-auto w-full space-y-3">
+        <main className="flex-1 pt-16 pb-24 max-w-md mx-auto w-full space-y-3 px-3">
           {itemList.length === 0 ? (
             /* Empty State */
             <div className="flex flex-col items-center justify-center py-20 text-center space-y-3">
@@ -95,85 +243,13 @@ export function CartPage() {
             /* Cart Item List */
             <div className="space-y-2.5">
               {itemList.map(({ product, quantity }) => (
-                <div
+                <CartItemRow
                   key={product.id}
-                  className="flex items-stretch gap-3 p-2.5 rounded-xl border border-border bg-card shadow-sm"
-                >
-                  {/* Product Image */}
-                  <div className="w-16 h-16 shrink-0 aspect-square rounded-lg bg-muted flex items-center justify-center border border-border/50 self-center">
-                    {product.image ? (
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <Package className="h-6 w-6 text-muted-foreground/50" />
-                    )}
-                  </div>
-
-                  {/* Details & Actions */}
-                  <div className="flex-1 flex flex-col justify-between min-w-0">
-                    <div className="flex items-start justify-between gap-1">
-                      <div className="min-w-0">
-                        <span className="text-[10px] font-mono text-muted-foreground uppercase">
-                          SKU: {product.sku}
-                        </span>
-                        <h4 className="text-xs font-semibold text-foreground leading-snug line-clamp-1">
-                          {product.name}
-                        </h4>
-                        <p className="text-xs font-bold text-primary mt-0.5">
-                          ৳{product.shopPrice.toLocaleString()} / {product.unit}
-                        </p>
-                      </div>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeItem(product.id)}
-                        className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10 shrink-0"
-                        aria-label="Remove item"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-
-                    {/* Quantity Controller & Subtotal */}
-                    <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-border/40">
-                      <div className="flex items-center gap-1.5 bg-muted/60 border border-border/60 rounded-lg p-0.5">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() =>
-                            updateQuantity(product.id, quantity - 1)
-                          }
-                          className="h-6 w-6 rounded-md hover:bg-background"
-                        >
-                          <Minus className="h-3 w-3" />
-                        </Button>
-
-                        <span className="text-xs font-bold text-foreground px-1 min-w-[20px] text-center">
-                          {quantity}
-                        </span>
-
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() =>
-                            updateQuantity(product.id, quantity + 1)
-                          }
-                          className="h-6 w-6 rounded-md hover:bg-background"
-                        >
-                          <Plus className="h-3 w-3" />
-                        </Button>
-                      </div>
-
-                      <p className="text-xs font-bold text-foreground">
-                        ৳{(product.shopPrice * quantity).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                  product={product}
+                  quantity={quantity}
+                  onUpdateQuantity={updateQuantity}
+                  onRemoveItem={removeItem}
+                />
               ))}
 
               {/* Optional Note Card */}
