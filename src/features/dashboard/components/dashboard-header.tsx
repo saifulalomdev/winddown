@@ -55,7 +55,7 @@ export function DashboardHeader() {
 
             {/* Connection Status */}
             <div className="flex items-center gap-1.5 text-xs font-medium pt-1">
-              <p>Active Route |</p>
+              <p className="uppercase">{activeOrganization?.role} |</p>
               {isOnline ? (
                 <>
                   <Wifi className="h-3.5 w-3.5 text-emerald-600" />

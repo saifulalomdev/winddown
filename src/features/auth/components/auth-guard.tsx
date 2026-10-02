@@ -11,8 +11,6 @@ export function AuthGuard() {
 
   useEffect(() => {
     if (isLoading) return;
-    console.log(session)
-
     const inAuthGroup = location.pathname.startsWith("/auth");
     const isCreatingOrg = location.pathname === "/orgs/new";
     const isAuthenticated = Boolean(user && session);
