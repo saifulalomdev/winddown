@@ -1,21 +1,25 @@
-export interface Session {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-  expiresAt: Date;
-  token: string;
-  ipAddress?: string | null | undefined;
-  userAgent?: string | null | undefined;
-};
+import type { BaseUser, BaseSession } from "better-auth/client";
+import type { Organization } from "better-auth/client/plugins";
 
-export interface User {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  email: string;
-  emailVerified: boolean;
-  name: string;
-  image?: string | null | undefined;
+export interface Session extends BaseSession {
   activeOrganizationId?: string | null | undefined;
-};
+}
+
+export interface AuthData {
+  user: BaseUser;
+  session: Session;
+  organizations: Organization[];
+  activeOrganizationId?: string | null;
+}
+
+export interface AuthContextType {
+  user: BaseUser | null;
+  session: Session | null;
+  organizations: Organization[];
+  activeOrganization: Organization | null;
+  isLoading: boolean;
+  isLoggingOut: boolean;
+  setAuthData: (data: AuthData | null) => void;
+  setActiveOrganization: (orgId: string) => Promise<void>;
+  signOut: () => Promise<void>;
+}

@@ -22,20 +22,13 @@ export function CapacitorBackButton() {
       activeListener = await CapacitorApp.addListener('backButton', () => {
         const currentPath = locationRef.current.pathname.replace(/\/$/, '') || '/';
 
-        // 1. If on root page, open the exit confirmation dialog
+        // If on root page, open the exit confirmation dialog
         if (currentPath === '/') {
           setIsExitDialogOpen(true);
           return;
         }
 
-        // 2. If on main tab screens, go back to home dashboard
-        const tabRoutes = ['/products', '/orders', '/outlets', '/settings'];
-        if (tabRoutes.includes(currentPath)) {
-          navigate('/', { replace: true });
-          return;
-        }
-
-        // 3. For any other sub-page (e.g. /cart), go back or fallback to home
+        // sub-page (e.g. /cart), go back or fallback to home
         if (window.history.length > 1) {
           navigate(-1);
         } else {

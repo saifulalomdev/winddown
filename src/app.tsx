@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider, AuthGuard, AuthLoginPage } from './features/auth';
 import { TabLayout } from './layouts/layout-tab';
 import { BaseLayout } from './layouts/layout-base';
@@ -13,6 +13,7 @@ import { OrderPage } from './features/order/pages/order-page';
 import { CartProvider } from './features/cart/components/cart-context';
 import { CartPage } from './features/cart/pages/cart-page';
 import { CapacitorBackButton } from './components/back-button';
+import { AddNewOrgPage } from './features/org/pages/org-new';
 
 export default function App() {
   const [isI18nReady, setIsI18nReady] = useState(false);
@@ -27,7 +28,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <CapacitorBackButton/>
+      <CapacitorBackButton />
       <ThemeProvider defaultTheme="system" storageKey="user_theme">
         <AuthProvider>
           <CartProvider>
@@ -41,9 +42,13 @@ export default function App() {
                     <Route path="outlets" element={<ShopPage />} />
                     <Route path="settings" element={<SettingsPage />} />
                   </Route>
+                  <Route path='orgs'>
+                    <Route path='new' element={<AddNewOrgPage />} />
+                    <Route path='new' element={<AddNewOrgPage />} />
+                  </Route>
                   <Route path="cart" element={<CartPage />} />
                   <Route path="auth" element={<AuthLoginPage />} />
-                  <Route path="*" element={<Navigate to="/" replace />} />
+                  <Route path="*" element={<div>Not found</div>} />
                 </Route>
               </Route>
             </Routes>

@@ -8,11 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from "react";
 import { authClient } from '../auth-client';
 import { useAuth } from '../components/auth-context';
+import { fetchFreshAuthData } from '../auth-utils';
 
 export function AuthLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { t } = useTranslation('auth');
-  const { setAuthData } = useAuth()
+  const { setAuthData } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,31 +36,32 @@ export function AuthLoginPage() {
 
       const result = await GoogleSignIn.signIn();
 
-      // 💡 Catch if the native plugin fails to return a token in production APK
       if (!result || !result.idToken) {
         alert("Native Google SignIn succeeded but returned an empty ID token profile!");
         return;
       }
       
+      // 1. Authenticate with server
       await authClient.signIn.social({
         provider: "google",
         idToken: { token: result.idToken }
       });
 
-      const { data } = await authClient.getSession();
-      if (data) {
-        setAuthData(data);
+      // 2. Fetch full session + orgs together
+      const freshData = await fetchFreshAuthData();
+
+      if (freshData) {
+        setAuthData(freshData);
         navigate("/", { replace: true });
+      } else {
+        alert("Failed to restore session after login.");
       }
-      navigate("/");
     } catch (error: any) {
-      // 💡 Pops up the exact structural error directly onto your mobile display
       alert(`APK Error Profile:\nCode: ${error.code}\nMessage: ${error.message || JSON.stringify(error)}`);
     } finally {
       setIsLoading(false);
     }
   };
-
 
   return (
     <main className="flex flex-col justify-between h-dvh py-10 px-6">

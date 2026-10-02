@@ -39,7 +39,6 @@ export default function ProductPage() {
     },
   });
 
-  // 1. Initialize Capacitor SQLite & ProductRepository instance
   useEffect(() => {
     let isMounted = true;
 
@@ -141,7 +140,7 @@ export default function ProductPage() {
         description={selectedProduct
           ? 'Update product details and pricing.'
           : 'Add product details and upload sample images.'}
-        title={selectedProduct ? 'Edit Product' : 'Create New Product'}
+        title={selectedProduct ? 'Update product' : 'Add new product'}
       >
         <ProductForm
           form={form}

@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { useCart } from "@/features/cart/components/cart-context";
 import { AppAlert } from "@/components/app-alert";
 import {
-  Trash2,
   Plus,
   Minus,
-  ShoppingBag,
-  ArrowLeft,
+  Trash2,
   Package,
   FileText,
+  ArrowLeft,
+  ShoppingBag,
   CheckCircle2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
