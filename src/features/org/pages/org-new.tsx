@@ -11,6 +11,7 @@ import { ArrowLeft } from 'lucide-react';
 export function AddNewOrgPage() {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    
 
     const form = useForm<CreateOrganizationInput>({
         resolver: zodResolver(createOrganizationSchema),
@@ -54,7 +55,7 @@ export function AddNewOrgPage() {
                 </div>
             </Header>
 
-           <div>
+           <div className='pt-16'>
              <CreateOrgForm
                 form={form}
                 onSubmit={handleSubmit}

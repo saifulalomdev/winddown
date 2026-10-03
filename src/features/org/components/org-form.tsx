@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { useUploadFiles } from '@better-upload/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -9,7 +10,8 @@ import {
   FieldError,
   FieldLabel,
 } from '@/components/ui/field';
-import { CameraIcon, ImagePlus, Building2 } from 'lucide-react';
+import { CameraIcon, Building2, Loader2, X } from 'lucide-react';
+import { Storage } from '@/utils/storage-helper';
 import type { CreateOrganizationInput } from '../org-schema';
 
 interface CreateOrgFormProps {
@@ -30,8 +32,87 @@ export function CreateOrgForm({
   const [logoPreview, setLogoPreview] = useState<string | undefined>(
     form.getValues('logo')
   );
+  const [isUploading, setIsUploading] = useState(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
 
-  // Auto-generate slug from agency/route name
+  // Load token on mount
+  useEffect(() => {
+    async function loadToken() {
+      try {
+        const token = await Storage.get<string>('session_token', { secure: true });
+        if (token) setAuthToken(token);
+      } catch (error) {
+        console.error('Error fetching token:', error);
+      }
+    }
+    loadToken();
+  }, []);
+
+  // Configure upload client hook
+  const { control } = useUploadFiles({
+    api: `${import.meta.env.VITE_API_BASE_URL || ''}/api/upload`,
+    route: 'images',
+    // Always pass active header object dynamically
+    headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+    onUploadComplete: ({ files }) => {
+      if (files && files.length > 0) {
+        const file = files[0];
+        const cdnUrl = `https://cdn.ezorder.saifulalom.com/${file.objectInfo.key}`;
+
+        setLogoPreview(cdnUrl);
+        form.setValue('logo', cdnUrl, {
+          shouldValidate: true,
+          shouldDirty: true,
+        });
+      }
+      setIsUploading(false);
+    },
+    // Reset state on error so the spinner doesn't run forever
+    onError: (error) => {
+      console.error('Upload failed:', error);
+      setIsUploading(false);
+    },
+  });
+
+  const handlePickPhoto = async () => {
+    try {
+      // 1. Lower quality setting (e.g. 60-70) for smaller file size
+      const image = await Camera.getPhoto({
+        quality: 70,
+        width: 600, // Limit resolution for avatars/logos
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Photos,
+      });
+
+      if (!image.webPath) return;
+
+      // Show local preview immediately
+      setLogoPreview(image.webPath);
+      setIsUploading(true);
+
+      // Ensure token exists before triggering upload
+      let currentToken = authToken;
+      if (!currentToken) {
+        currentToken = await Storage.get<string>('session_token', { secure: true });
+        if (currentToken) setAuthToken(currentToken);
+      }
+
+      // Convert webPath to File
+      const response = await fetch(image.webPath);
+      const blob = await response.blob();
+      const format = image.format || 'jpeg';
+      const file = new File([blob], `logo-${Date.now()}.${format}`, {
+        type: `image/${format}`,
+      });
+
+      // Execute upload
+      await control.upload([file]);
+    } catch (error) {
+      console.error('Photo picker or upload error:', error);
+      setIsUploading(false);
+    }
+  };
+
   const handleNameChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     onChange: (val: string) => void
@@ -39,7 +120,6 @@ export function CreateOrgForm({
     const value = e.target.value;
     onChange(value);
 
-    // Only auto-slug if user hasn't manually altered the slug field significantly
     const autoSlug = value
       .toLowerCase()
       .trim()
@@ -49,51 +129,56 @@ export function CreateOrgForm({
     form.setValue('slug', autoSlug, { shouldValidate: true });
   };
 
-  // Photo pickers using Capacitor Camera
-  const handleTakePhoto = async () => {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 80,
-        allowEditing: true,
-        resultType: CameraResultType.Uri,
-        source: CameraSource.Camera,
-      });
-
-      if (image.webPath) setLogo(image.webPath);
-    } catch (error) {
-      console.log('Camera cancelled:', error);
-    }
-  };
-
-  const handlePickPhoto = async () => {
-    try {
-      const image = await Camera.getPhoto({
-        quality: 80,
-        allowEditing: true,
-        resultType: CameraResultType.Uri,
-        source: CameraSource.Photos,
-      });
-
-      if (image.webPath) setLogo(image.webPath);
-    } catch (error) {
-      console.log('Photo picker cancelled:', error);
-    }
-  };
-
-  const setLogo = (path: string) => {
-    setLogoPreview(path);
-    form.setValue('logo', path, { shouldValidate: true, shouldDirty: true });
-  };
-
   const handleRemoveLogo = () => {
     setLogoPreview(undefined);
-    form.setValue('logo', undefined, { shouldValidate: true, shouldDirty: true });
+    form.setValue('logo', '', { shouldValidate: true, shouldDirty: true });
   };
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-4 rounded-lg">
-        
+        {/* Avatar Container */}
+        <div className="relative size-32 mx-auto">
+          <div className="size-full border rounded-full overflow-hidden bg-muted flex items-center justify-center relative">
+            {logoPreview ? (
+              <img
+                src={logoPreview}
+                alt="Logo preview"
+                className="size-full object-cover"
+              />
+            ) : (
+              <Building2 className="size-12 text-muted-foreground" />
+            )}
+
+            {isUploading && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <Loader2 className="size-6 text-white animate-spin" />
+              </div>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={handlePickPhoto}
+            disabled={isLoading || isUploading}
+            className="absolute bottom-0 right-0 p-2 rounded-full bg-primary text-primary-foreground shadow-md hover:bg-primary/90 transition-colors disabled:opacity-50"
+            aria-label="Upload photo"
+          >
+            <CameraIcon className="size-4" />
+          </button>
+
+          {logoPreview && !isUploading && (
+            <button
+              type="button"
+              onClick={handleRemoveLogo}
+              className="absolute top-0 right-0 p-1 rounded-full bg-destructive text-destructive-foreground shadow-md hover:bg-destructive/90 transition-colors"
+              aria-label="Remove photo"
+            >
+              <X className="size-3" />
+            </button>
+          )}
+        </div>
+
         {/* Agency / Route Name */}
         <Controller
           name="name"
@@ -118,7 +203,7 @@ export function CreateOrgForm({
           )}
         />
 
-        {/* Unique Identifier / Slug */}
+        {/* Slug */}
         <Controller
           name="slug"
           control={form.control}
@@ -137,59 +222,14 @@ export function CreateOrgForm({
             </Field>
           )}
         />
-
-        {/* Agency Logo / Banner Photo */}
-        <Field>
-          <FieldLabel>Agency Photo or Logo (Optional)</FieldLabel>
-          <FieldDescription>
-            Add a logo or photo for your distribution point.
-          </FieldDescription>
-
-          {logoPreview ? (
-            <div className="relative mt-2 size-24 rounded-lg border overflow-hidden">
-              <img
-                src={logoPreview}
-                alt="Agency Logo"
-                className="h-full w-full object-cover"
-              />
-              <button
-                type="button"
-                onClick={handleRemoveLogo}
-                className="absolute top-1 right-1 rounded-full bg-red-600 p-1 text-white text-xs"
-              >
-                ✕
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isLoading}
-                onClick={handleTakePhoto}
-              >
-                <CameraIcon className="size-4 mr-2" /> Take Photo
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isLoading}
-                onClick={handlePickPhoto}
-              >
-                <ImagePlus className="size-4 mr-2" /> Pick Photo
-              </Button>
-            </div>
-          )}
-        </Field>
       </div>
 
-      {/* Action Buttons */}
       <div className="grid grid-cols-2 gap-3 pt-2">
         {onCancel && (
           <Button
             type="button"
             variant="outline"
-            disabled={isLoading}
+            disabled={isLoading || isUploading}
             onClick={onCancel}
             className="w-full"
           >
@@ -198,7 +238,7 @@ export function CreateOrgForm({
         )}
         <Button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || isUploading}
           className={onCancel ? 'w-full' : 'w-full col-span-2'}
         >
           <Building2 className="size-4 mr-2" />
