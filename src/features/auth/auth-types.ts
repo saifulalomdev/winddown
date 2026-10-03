@@ -15,7 +15,7 @@ export interface Session extends BaseSession {
 export interface AuthData {
   user: BaseUser;
   session: Session;
-  organizations: CachedOrganization[]; // Changed from Organization[]
+  organizations: CachedOrganization[];
   activeOrganizationId?: string | null;
 }
 

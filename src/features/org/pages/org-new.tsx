@@ -54,11 +54,13 @@ export function AddNewOrgPage() {
                 </div>
             </Header>
 
-            <CreateOrgForm
+           <div>
+             <CreateOrgForm
                 form={form}
                 onSubmit={handleSubmit}
                 isLoading={isLoading}
             />
+           </div>
         </>
     );
 }

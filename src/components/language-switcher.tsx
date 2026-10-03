@@ -14,7 +14,7 @@ export function LanguageSwitcher() {
   const isBangla = currentLang === 'bn';
 
   return (
-    <div className="flex flex-row items-center gap-2 h-12 justify-between w-full bg-gray-100 rounded-full">
+    <div className="flex flex-row items-center gap-2 h-12 justify-between w-full bg-muted rounded-full">
       <Button
         size="sm"
         variant={isEnglish ? 'outline' : 'ghost'}

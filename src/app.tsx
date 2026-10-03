@@ -14,6 +14,7 @@ import { CartProvider } from './features/cart/components/cart-context';
 import { CartPage } from './features/cart/pages/cart-page';
 import { CapacitorBackButton } from './components/back-button';
 import { AddNewOrgPage } from './features/org/pages/org-new';
+import { OnboardPage } from './onboard/pages/onboard-page';
 
 export default function App() {
   const [isI18nReady, setIsI18nReady] = useState(false);
@@ -44,8 +45,9 @@ export default function App() {
                   </Route>
                   <Route path='orgs'>
                     <Route path='new' element={<AddNewOrgPage />} />
-                    <Route path='new' element={<AddNewOrgPage />} />
+                    <Route path=':orgId' element={<AddNewOrgPage />} />
                   </Route>
+                  <Route path='onboard' element={<OnboardPage />} />
                   <Route path="cart" element={<CartPage />} />
                   <Route path="auth" element={<AuthLoginPage />} />
                   <Route path="*" element={<div>Not found</div>} />

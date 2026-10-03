@@ -1,8 +1,8 @@
 // src/features/auth/components/auth-guard.tsx
-import { useEffect } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "./auth-context";
+import { useEffect } from "react";
 
 export function AuthGuard() {
   const { user, session, isLoading, organizations } = useAuth();
@@ -27,14 +27,14 @@ export function AuthGuard() {
       if (hasOrg) {
         navigate("/", { replace: true });
       } else {
-        navigate("/orgs/new", { replace: true });
+        navigate("/", { replace: true });
       }
       return;
     }
 
     // 3. Logged in, no organization, trying to access app pages -> Force /orgs/new
     if (isAuthenticated && !hasOrg && !isCreatingOrg) {
-      navigate("/orgs/new", { replace: true });
+      navigate("/onboard", { replace: true });
       return;
     }
 
